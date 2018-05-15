@@ -87,13 +87,18 @@ object AmpAdCleaner {
 case class AmpAdCleaner(edition: Edition, uri: String, article: Article) extends HtmlCleaner {
 
   def adAfter(element: Element): Element = {
+    // data-block-on-consent should not have ANY value
+    // according to https://www.ampproject.org/docs/reference/components/amp-consent
+    // data-block-on-consent="PLEASEREMOVEME"
     val ampAd = <div class="amp-ad-container">
-      <amp-ad width="300" height="250" type="doubleclick" data-loading-strategy="prefer-viewability-over-views"
+      <amp-ad data-block-on-consent="PLEASEREMOVEME"
+              width="300" height="250" type="doubleclick" data-loading-strategy="prefer-viewability-over-views"
               json={AmpAd(article, uri, edition.id.toLowerCase()).toString()}
               data-slot={AmpAdDataSlot(article).toString()}>
       </amp-ad>
     </div>
-    element.after(ampAd.toString())
+    // See above comment to know why this horrible thing is there.
+    element.after( ampAd.toString().replaceFirst("=\"PLEASEREMOVEME\"", "") )
   }
 
   override def clean(document: Document): Document = {

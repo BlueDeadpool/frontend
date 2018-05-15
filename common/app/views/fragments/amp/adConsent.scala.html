@@ -1,0 +1,53 @@
+@()(implicit request: RequestHeader, context: model.ApplicationContext)
+@*
+GDPR personalised advertisement setting component as described
+in https://support.google.com/dfp_premium/answer/7678538
+*@
+
+@*
+ EEA Countries
+
+    "promptIfUnknownForGeoGroup": "eea",
+
+
+*@
+<style>
+.amp-iso-country-uk .with-uk-frame { border: 5px solid blue }
+.consent-ui { position: fixed; bottom: 100px; background-color: red; }
+</style>
+
+<amp-geo layout="nodisplay">
+  <script type="application/json">
+    {
+      "ISOCountryGroups": {
+        "eea": [ "at", "be", "bg", "cy", "cz", "de", "dk", "ee", "es", "fi", "fr",
+        "gb", "gr", "hr", "hu", "ie", "is", "it", "li", "lt", "lu", "lv", "mt", "nl",
+        "no", "pl", "pt", "ro", "se", "si", "sk", "uk"]
+      }
+    }
+  </script>
+</amp-geo>
+
+<amp-consent layout="nodisplay" id="the-adconsent-element">
+  <script type="application/json">
+    {
+      "consents": {
+        "adconsent": {
+          "promptIfUnknownForGeoGroup": "eea",
+          "promptUI": "adconsent-ui"
+        }
+      },
+      "postPromptUI": "post-adconsent-ui"
+    }
+  </script>
+  <div id="adconsent-ui" class="with-uk-frame consent-ui">
+    Do you say yes to internet stalking?
+    <button on="tap:the-adconsent-element.accept"  role="button">YES DO TRACK ME</button>
+    <button on="tap:the-adconsent-element.reject"  role="button">NO LEAVE ME ALONE</button>
+    <button on="tap:the-adconsent-element.dismiss" role="button">CLOSE</button>
+  </div>
+  <div id="post-adconsent-ui">
+    <button on="tap:the-adconsent-element.prompt"  role="button">TAP HERE FOR SETTINGS</button>
+  </div>
+</amp-consent>
+
